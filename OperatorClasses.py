@@ -1,4 +1,5 @@
 import OperandClasses
+import MathematicsExceptions
 
 
 class Operator(OperandClasses.EquationComponent):
@@ -22,10 +23,9 @@ class Operator(OperandClasses.EquationComponent):
 
 
 class AdditionOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize an Addition Operator Class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_ADDITION)
 
@@ -40,10 +40,9 @@ class AdditionOperator(Operator):
 
 
 class SubtractionOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize a Subtraction Operator Class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_SUBTRACTION)
 
@@ -58,10 +57,9 @@ class SubtractionOperator(Operator):
 
 
 class MultiplicationOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize a Multiplication Operator Class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_MULTIPLICATION)
 
@@ -76,10 +74,9 @@ class MultiplicationOperator(Operator):
 
 
 class DivisionOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize a Division Operator Class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_DIVISION)
 
@@ -91,14 +88,15 @@ class DivisionOperator(Operator):
         :param operand2: the second operand to perform the division on.
         :return: the result of dividing the 2 operands.
         """
+        if operand2.get_value() == 0:
+            raise MathematicsExceptions.DivideByZeroException()
         return OperandClasses.Operand(operand1.get_value() / operand2.get_value())
 
 
 class PowerOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize a Power Operator Class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_POWER)
 
@@ -111,14 +109,15 @@ class PowerOperator(Operator):
         :param operand2: the second operand to perform the powering on.
         :return: the result of powering the 2 operands.
         """
+        if operand1.get_value() == 0 and operand2.get_value() == 0:
+            raise MathematicsExceptions.PowerZeroByZeroException()
         return OperandClasses.Operand(operand1.get_value() ** operand2.get_value())
 
 
 class ModuluOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize a Modulu Operator Class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_MODULU)
 
@@ -130,14 +129,15 @@ class ModuluOperator(Operator):
         :param operand2: the second operand to perform the modulu on.
         :return: the result of modulu the 2 operands.
         """
+        if operand2.get_value() == 0:
+            raise MathematicsExceptions.DivideByZeroException()
         return OperandClasses.Operand(operand1.get_value() % operand2.get_value())
 
 
 class AverageOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize an Average between two operands Operator Class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_AVERAGE)
 
@@ -152,10 +152,9 @@ class AverageOperator(Operator):
 
 
 class MaximumOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize a Maximum between two operands Operator Class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_MAXIMUM)
 
@@ -166,16 +165,15 @@ class MaximumOperator(Operator):
         :param operand2: the second operand to check if bigger.
         :return: the bigger number between the two.
         """
-        if operand1 >= operand2:
+        if operand1.get_value() >= operand2.get_value():
             return operand1
         return operand2
 
 
 class MinimumOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize a Minimum between two operands Operator Class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_MINIMUM)
 
@@ -186,16 +184,15 @@ class MinimumOperator(Operator):
         :param operand2: the second operand to check if smaller.
         :return: the smaller number between the two.
         """
-        if operand1 <= operand2:
+        if operand1.get_value() <= operand2.get_value():
             return operand1
         return operand2
 
 
 class NegativeOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize a Negative of an operand class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_NEGATIVE)
 
@@ -211,10 +208,9 @@ class NegativeOperator(Operator):
 
 
 class FactorialOperator(Operator):
-    def __init(self) -> None:
+    def __init__(self) -> None:
         """
         The Function initialize a factorial of an operand class.
-        :return: None
         """
         super().__init__(OperandClasses.POWER_OF_FACTORIAL)
 
@@ -228,7 +224,12 @@ class FactorialOperator(Operator):
         :param operand2: the second operand is useless. by default, it equals to 0.
         :return: the negative of operand1.
         """
+        if operand1.get_value() < 0:
+            raise MathematicsExceptions.FactorialOfNegativeException()
+        if isinstance(operand1.get_value(), float):
+            if not operand1.get_value().is_integer():
+                raise MathematicsExceptions.FactorialOfRationalException
         factorial = 1
-        for index in range(1, operand1.get_value() + 1):
+        for index in range(1, int(operand1.get_value()) + 1):
             factorial = factorial * index
         return OperandClasses.Operand(factorial)

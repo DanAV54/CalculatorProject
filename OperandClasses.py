@@ -50,3 +50,11 @@ class Operand(EquationComponent):
         :return: None
         """
         self.__value__ = new_value
+
+    def __str__(self):
+        """
+        The function will return the operator's value.
+        the function will be called every time the program will ask to print operand.
+        :return: a string that contains the operand's value
+        """
+        return str(self.__value__)
