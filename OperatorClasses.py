@@ -233,3 +233,13 @@ class FactorialOperator(Operator):
         for index in range(1, int(operand1.get_value()) + 1):
             factorial = factorial * index
         return OperandClasses.Operand(factorial)
+
+
+class ParenthesisOperator(Operator):
+    def __init__(self, is_opening) -> None:
+        """
+        The Function initialize a Parenthesis operand class.
+        :param is_opening: the parameter that defines if Parenthesis is opening or closing.
+        """
+        super().__init__(OperandClasses.POWER_OF_PARENTHESIS)
+        self.is_opening = is_opening
