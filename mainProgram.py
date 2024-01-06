@@ -1,7 +1,6 @@
 import MathematicsExceptions
-import OperandClasses
-import OperatorClasses
 import UserInterfaceAndInput
+import ExpressionSolver
 
 
 def main():
@@ -12,7 +11,8 @@ def main():
         option = UserInterfaceAndInput.input_option()
 
         if option == "c":
-            UserInterfaceAndInput.input_expression()
+            solver = ExpressionSolver.ExpressionSolver(UserInterfaceAndInput.input_expression())
+            solver.solve_expression()
         elif option == "h":
             UserInterfaceAndInput.print_help()
         elif option == "q":

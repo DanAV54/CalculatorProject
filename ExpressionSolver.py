@@ -1,8 +1,8 @@
-import OperandClasses
+import ExpressionComponentsClasses
 import SyntaxExceptions
 
-LEGAL_CHARACTERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
-                    , "+", "-", ".", " ", "*", "/", "^", "%", "@", "$", "&", "~", "!"]
+LEGAL_CHARACTERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "+", "-", ".", " ", "*", "/", "^", "%", "@", "$",
+                    "&", "~", "!", "(", ")"]
 
 
 class ExpressionSolver(object):
@@ -12,12 +12,12 @@ class ExpressionSolver(object):
         """
         self.expression = expression
 
-    def solve_expression(self) -> float:
+    def solve_expression(self) -> None:
         """
         TODO
-        :return:
         """
-        pass
+        self.__character_check__()
+        print(self.__expressionSimplifier__())
 
     def __character_check__(self) -> None:
         """
@@ -33,22 +33,49 @@ class ExpressionSolver(object):
         translation_table = str.maketrans("", "", " ")
         self.expression = self.expression.translate(translation_table)
 
-        """ 
-        TODO 
         temporary_number_holder = 0
         if_number_flag = False
+        negative = 1
+        if_multiple_minuses = False
 
-        EquationComponentList = []
+        component_list = []
 
-        for char in self.expression:
-            if char.isdigit():
-                if_number_flag = True
+        for i in range(len(self.expression)):
+            if self.expression[i] == "-":
+                if if_multiple_minuses:
+                    negative *= -1
+                elif i - 1 < 0 or (
+                        self.expression[i - 1] != "!" and self.expression[i - 1] != ")" and not self.expression[i - 1].isdigit()):
+                    negative = -1
+                    if_multiple_minuses = True
+                else:
+                    if if_number_flag:
+                        component_list.append(temporary_number_holder * negative)
+                        temporary_number_holder = 0
+                        if_number_flag = False
+                        negative = 1
+                        if_multiple_minuses = False
+                    component_list.append(self.expression[i])
+            elif self.expression[i].isdigit():
                 temporary_number_holder *= 10
-                temporary_number_holder += int(char)
+                temporary_number_holder += int(self.expression[i])
+                if_number_flag = True
             else:
                 if if_number_flag:
-                    EquationComponentList.append(OperandClasses.Operand(temporary_number_holder))
-                temporary_number_holder = 0
-                if_number_flag = False"""
+                    component_list.append(temporary_number_holder * negative)
+                    temporary_number_holder = 0
+                    if_number_flag = False
+                    negative = 1
+                    if_multiple_minuses = False
+                component_list.append(self.expression[i])
+        if if_number_flag:
+            component_list.append(temporary_number_holder * negative)
 
+        return component_list
 
+    """def __expression_to_list__(self):
+        EquationComponentList = []
+
+        previous_component = None
+
+        for char in"""
