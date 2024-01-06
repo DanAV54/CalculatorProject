@@ -228,7 +228,7 @@ class FactorialOperator(Operator):
             raise MathematicsExceptions.FactorialOfNegativeException()
         if isinstance(operand1.get_value(), float):
             if not operand1.get_value().is_integer():
-                raise MathematicsExceptions.FactorialOfRationalException
+                raise MathematicsExceptions.FactorialOfRationalException()
         factorial = 1
         for index in range(1, int(operand1.get_value()) + 1):
             factorial = factorial * index
