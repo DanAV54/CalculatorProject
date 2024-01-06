@@ -38,6 +38,13 @@ class AdditionOperator(Operator):
         """
         return OperandClasses.Operand(operand1.get_value() + operand2.get_value())
 
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
+
 
 class SubtractionOperator(Operator):
     def __init__(self) -> None:
@@ -55,6 +62,13 @@ class SubtractionOperator(Operator):
         """
         return OperandClasses.Operand(operand1.get_value() - operand2.get_value())
 
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
+
 
 class MultiplicationOperator(Operator):
     def __init__(self) -> None:
@@ -71,6 +85,13 @@ class MultiplicationOperator(Operator):
         :return: the result of multiplying the 2 operands.
         """
         return OperandClasses.Operand(operand1.get_value() * operand2.get_value())
+
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
 
 
 class DivisionOperator(Operator):
@@ -91,6 +112,13 @@ class DivisionOperator(Operator):
         if operand2.get_value() == 0:
             raise MathematicsExceptions.DivideByZeroException()
         return OperandClasses.Operand(operand1.get_value() / operand2.get_value())
+
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
 
 
 class PowerOperator(Operator):
@@ -113,6 +141,13 @@ class PowerOperator(Operator):
             raise MathematicsExceptions.PowerZeroByZeroException()
         return OperandClasses.Operand(operand1.get_value() ** operand2.get_value())
 
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
+
 
 class ModuluOperator(Operator):
     def __init__(self) -> None:
@@ -133,6 +168,13 @@ class ModuluOperator(Operator):
             raise MathematicsExceptions.DivideByZeroException()
         return OperandClasses.Operand(operand1.get_value() % operand2.get_value())
 
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
+
 
 class AverageOperator(Operator):
     def __init__(self) -> None:
@@ -149,6 +191,13 @@ class AverageOperator(Operator):
         :return: the average of the operands.
         """
         return OperandClasses.Operand((operand1.get_value() + operand2.get_value()) / 2)
+
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
 
 
 class MaximumOperator(Operator):
@@ -169,6 +218,13 @@ class MaximumOperator(Operator):
             return operand1
         return operand2
 
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
+
 
 class MinimumOperator(Operator):
     def __init__(self) -> None:
@@ -188,6 +244,13 @@ class MinimumOperator(Operator):
             return operand1
         return operand2
 
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
+
 
 class NegativeOperator(Operator):
     def __init__(self) -> None:
@@ -205,6 +268,20 @@ class NegativeOperator(Operator):
         :return: the negative of operand1.
         """
         return OperandClasses.Operand(operand1.get_value() * -1)
+
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, AdditionOperator) \
+                and not isinstance(element_to_check, SubtractionOperator) \
+                and not isinstance(element_to_check, MultiplicationOperator) \
+                and not isinstance(element_to_check, DivisionOperator) \
+                and not isinstance(element_to_check, PowerOperator) \
+                and not isinstance(element_to_check, AverageOperator) \
+                and not isinstance(element_to_check, MaximumOperator) \
+                and not isinstance(element_to_check, MinimumOperator) \
+                and not isinstance(element_to_check, ModuluOperator) \
+                and not isinstance(element_to_check, RightParenthesisOperator):
+            return False
+        return True
 
 
 class FactorialOperator(Operator):
@@ -234,12 +311,48 @@ class FactorialOperator(Operator):
             factorial = factorial * index
         return OperandClasses.Operand(factorial)
 
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True
 
-class ParenthesisOperator(Operator):
-    def __init__(self, is_opening) -> None:
+
+class LeftParenthesisOperator(Operator):
+    def __init__(self) -> None:
         """
-        The Function initialize a Parenthesis operand class.
-        :param is_opening: the parameter that defines if Parenthesis is opening or closing.
+        The Function initialize a Left Parenthesis operand class.
         """
         super().__init__(OperandClasses.POWER_OF_PARENTHESIS)
-        self.is_opening = is_opening
+
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, AdditionOperator) \
+                and not isinstance(element_to_check, SubtractionOperator) \
+                and not isinstance(element_to_check, MultiplicationOperator) \
+                and not isinstance(element_to_check, DivisionOperator) \
+                and not isinstance(element_to_check, PowerOperator) \
+                and not isinstance(element_to_check, AverageOperator) \
+                and not isinstance(element_to_check, MaximumOperator) \
+                and not isinstance(element_to_check, MinimumOperator) \
+                and not isinstance(element_to_check, ModuluOperator) \
+                and not isinstance(element_to_check, NegativeOperator) \
+                and not isinstance(element_to_check, RightParenthesisOperator):
+            return False
+        return True
+
+
+
+class RightParenthesisOperator(Operator):
+    def __init__(self) -> None:
+        """
+        The Function initialize a Right Parenthesis operand class.
+        """
+        super().__init__(OperandClasses.POWER_OF_PARENTHESIS)
+
+    def is_valid_before(self, element_to_check: OperandClasses.EquationComponent) -> bool:
+        if not isinstance(element_to_check, OperandClasses.Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator):
+            return False
+        return True

@@ -1,5 +1,5 @@
 from typing import Union
-
+import OperatorClasses
 
 POWER_OF_OPERAND = 0
 POWER_OF_ADDITION = 1
@@ -24,6 +24,9 @@ class EquationComponent(object):
         The power indicates the order pf precedence in the expression.
         """
         self.__power__ = power_value
+
+    def is_valid_before(self, element_to_check):
+        pass
 
 
 class Operand(EquationComponent):
@@ -58,3 +61,18 @@ class Operand(EquationComponent):
         :return: a string that contains the operand's value
         """
         return str(self.__value__)
+
+    def is_valid_before(self, element_to_check: EquationComponent):
+        if not isinstance(element_to_check, OperatorClasses.AdditionOperator) \
+                and not isinstance(element_to_check, OperatorClasses.SubtractionOperator) \
+                and not isinstance(element_to_check, OperatorClasses.MultiplicationOperator) \
+                and not isinstance(element_to_check, OperatorClasses.DivisionOperator) \
+                and not isinstance(element_to_check, OperatorClasses.PowerOperator) \
+                and not isinstance(element_to_check, OperatorClasses.AverageOperator) \
+                and not isinstance(element_to_check, OperatorClasses.MaximumOperator) \
+                and not isinstance(element_to_check, OperatorClasses.MinimumOperator) \
+                and not isinstance(element_to_check, OperatorClasses.ModuluOperator) \
+                and not isinstance(element_to_check, OperatorClasses.NegativeOperator) \
+                and not isinstance(element_to_check, OperatorClasses.RightParenthesisOperator):
+            return False
+        return True
