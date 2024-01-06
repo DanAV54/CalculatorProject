@@ -26,6 +26,12 @@ class EquationComponent(object):
         self.__power__ = power_value
 
     def is_valid_before(self, element_to_check):
+        """
+        The function is checking if "element_to_check" can appear before The Equation Component.
+        if it does, return True. otherwise return False.
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         pass
 
 
@@ -63,6 +69,25 @@ class Operand(EquationComponent):
         return str(self.__value__)
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Operand.
+        if it does, return True. otherwise return False.
+        Before Operand The Following Components can appear:
+            - '+'
+            - '-'
+            - '*'
+            - '/'
+            - '^'
+            - '@'
+            - '$'
+            - '&'
+            - '%'
+            - '~'
+            - '('
+            - None (The component can be the first component in the expression)
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, AdditionOperator) \
                 and not isinstance(element_to_check, SubtractionOperator) \
                 and not isinstance(element_to_check, MultiplicationOperator) \
@@ -73,10 +98,11 @@ class Operand(EquationComponent):
                 and not isinstance(element_to_check, MinimumOperator) \
                 and not isinstance(element_to_check, ModuluOperator) \
                 and not isinstance(element_to_check, NegativeOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator)\
+                and not isinstance(element_to_check, LeftParenthesisOperator)\
                 and element_to_check is not None:
             return False
         return True
+
 
 class Operator(EquationComponent):
     def __init__(self, power_value: int) -> None:
@@ -115,9 +141,19 @@ class AdditionOperator(Operator):
         return Operand(operand1.get_value() + operand2.get_value())
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Addition Operator.
+        if it does, return True. otherwise return False.
+        Before Addition Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -139,9 +175,19 @@ class SubtractionOperator(Operator):
         return Operand(operand1.get_value() - operand2.get_value())
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Subtraction Operator.
+        if it does, return True. otherwise return False.
+        Before Subtraction Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -163,9 +209,19 @@ class MultiplicationOperator(Operator):
         return Operand(operand1.get_value() * operand2.get_value())
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Multiplication Operator.
+        if it does, return True. otherwise return False.
+        Before Multiplication Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -190,9 +246,19 @@ class DivisionOperator(Operator):
         return Operand(operand1.get_value() / operand2.get_value())
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Division Operator.
+        if it does, return True. otherwise return False.
+        Before Division Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -218,9 +284,19 @@ class PowerOperator(Operator):
         return Operand(operand1.get_value() ** operand2.get_value())
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Power Operator.
+        if it does, return True. otherwise return False.
+        Before Power Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -245,9 +321,19 @@ class ModuluOperator(Operator):
         return Operand(operand1.get_value() % operand2.get_value())
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Modulu Operator.
+        if it does, return True. otherwise return False.
+        Before Modulu Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -269,9 +355,19 @@ class AverageOperator(Operator):
         return Operand((operand1.get_value() + operand2.get_value()) / 2)
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Average Operator.
+        if it does, return True. otherwise return False.
+        Before Average Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -295,9 +391,19 @@ class MaximumOperator(Operator):
         return operand2
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Maximum Operator.
+        if it does, return True. otherwise return False.
+        Before Maximum Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -321,9 +427,19 @@ class MinimumOperator(Operator):
         return operand2
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Minimum Operator.
+        if it does, return True. otherwise return False.
+        Before Minimum Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -345,6 +461,24 @@ class NegativeOperator(Operator):
         return Operand(operand1.get_value() * -1)
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Negative Operator.
+        if it does, return True. otherwise return False.
+        Before Negative Operator The Following Components can appear:
+            - '+'
+            - '-'
+            - '*'
+            - '/'
+            - '^'
+            - '@'
+            - '$'
+            - '&'
+            - '%'
+            - '('
+            - None (The component can be the first component in the expression)
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, AdditionOperator) \
                 and not isinstance(element_to_check, SubtractionOperator) \
                 and not isinstance(element_to_check, MultiplicationOperator) \
@@ -354,7 +488,7 @@ class NegativeOperator(Operator):
                 and not isinstance(element_to_check, MaximumOperator) \
                 and not isinstance(element_to_check, MinimumOperator) \
                 and not isinstance(element_to_check, ModuluOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator) \
                 and element_to_check is not None:
             return False
         return True
@@ -387,9 +521,19 @@ class FactorialOperator(Operator):
         return Operand(factorial)
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Factorial Operator.
+        if it does, return True. otherwise return False.
+        Before Factorial Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
 
@@ -402,6 +546,25 @@ class LeftParenthesisOperator(Operator):
         super().__init__(POWER_OF_PARENTHESIS)
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Left Parenthesis Operator.
+        if it does, return True. otherwise return False.
+        Before Left Parenthesis Operator The Following Components can appear:
+            - '+'
+            - '-'
+            - '*'
+            - '/'
+            - '^'
+            - '@'
+            - '$'
+            - '&'
+            - '%'
+            - '~'
+            - '('
+            - None (The component can be the first component in the expression)
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, AdditionOperator) \
                 and not isinstance(element_to_check, SubtractionOperator) \
                 and not isinstance(element_to_check, MultiplicationOperator) \
@@ -426,8 +589,18 @@ class RightParenthesisOperator(Operator):
         super().__init__(POWER_OF_PARENTHESIS)
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Right Parenthesis Operator.
+        if it does, return True. otherwise return False.
+        Before Right Parenthesis Operator The Following Components can appear:
+            - 'Operand'
+            - '!'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True

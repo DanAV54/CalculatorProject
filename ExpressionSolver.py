@@ -1,4 +1,3 @@
-import ExpressionComponentsClasses
 import ComponentsFactory
 import SyntaxExceptions
 
@@ -18,7 +17,7 @@ class ExpressionSolver(object):
         TODO
         """
         self.__character_check__()
-        print(self.__expressionSimplifier__())
+        self.__create_list_of_components__(self.__expressionSimplifier__())
 
     def __character_check__(self) -> None:
         """
@@ -117,11 +116,22 @@ class ExpressionSolver(object):
             # Dot Can't be the final character in the number
             if temporary_number_holder[-1] == ".":
                 raise SyntaxExceptions.InvalidDotException()
-            component_list.append(temporary_number_holder * negative)
+            component_list.append(float(temporary_number_holder) * negative)
 
         return component_list
 
-    def __create_list_of_components__(self, component_list):
+    def __create_list_of_components__(self, component_list: list) -> list:
+        """
+        The function takes the list of components from "__expressionSimplifier__".
+        the function is creating a new list from the previous one but instead of values,
+        the new list will be filled with object from the type "EquationComponent".
+
+        in addition, the function is making sure there are no syntax errors,
+        the function is using the method "is_valid_before" that every "EquationComponent" has.
+        if the function finds a syntax problem it will raise "ExpressionComponentNotInRightPlaceException".
+        :param component_list: the old list with float, int and str values.
+        :return: The new list with "EquationComponent".
+        """
         equation_component_list = []
 
         previous_component = None
@@ -133,3 +143,5 @@ class ExpressionSolver(object):
             else:
                 equation_component_list.append(new_component_object)
                 previous_component = new_component_object
+
+        return equation_component_list

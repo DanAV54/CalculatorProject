@@ -44,6 +44,7 @@ class InvalidDotException (SyntaxException):
         """
         return "There is a dot without meaning in the expression.\n"
 
+
 class ExpressionComponentNotInRightPlaceException (SyntaxException):
     def __init__(self) -> None:
         """
@@ -54,6 +55,6 @@ class ExpressionComponentNotInRightPlaceException (SyntaxException):
     def __str__(self) -> str:
         """
         The function returns the string that describes the Exception.
-        :return: The String Describing that there is a Expression Component Not In Right Place.
+        :return: The String Describing that there is an Expression Component Not In Right Place.
         """
         return "There is a operator or operand that are not in a valid place.\n"

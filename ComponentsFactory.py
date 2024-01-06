@@ -3,7 +3,14 @@ import ExpressionComponentsClasses
 
 class ExpressionComponentFactory(object):
     @staticmethod
-    def create_component(value) -> ExpressionComponentsClasses.EquationComponent:
+    def create_component(value: object) -> ExpressionComponentsClasses.EquationComponent:
+        """
+        The function creates the right Expression Component in accordance to the input.
+        in case of a float/int value the function will return an Operand.
+        otherwise, the function will create the appropriate Operator.
+        :param value: The value to link to the right Component.
+        :return: The Expression Component
+        """
         if isinstance(value, float) or isinstance(value, int):
             return ExpressionComponentsClasses.Operand(value)
         elif value == "+":
