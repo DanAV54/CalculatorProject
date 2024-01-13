@@ -49,6 +49,7 @@ def print_help() -> None:
     print("\tminimum        (&)")
     print("\tnegative       (~)")
     print("\tfactorial      (!)")
+    print("\tsum of digits  (#)")
     print("for further information please read the 'README.md' file.")
     input("enter everything to continue: ")
 

@@ -71,3 +71,18 @@ class FactorialOfRationalException (MathematicsException):
         :return: The String Describing that Factorial of Rational number occurred.
         """
         return "Factorial of Rational Number Occurred\n"
+
+
+class SumOfNegativeException (MathematicsException):
+    def __init__(self) -> None:
+        """
+        The function initialize Sum of negative number Exception
+        """
+        pass
+
+    def __str__(self) -> str:
+        """
+        The function returns the string that describes the Exception.
+        :return: The String Describing that summing negative number occurred.
+        """
+        return "Summing Negative Number Occurred\n"

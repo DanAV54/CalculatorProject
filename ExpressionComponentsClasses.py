@@ -8,16 +8,18 @@ POWER_OF_MULTIPLICATION = 2
 POWER_OF_DIVISION = 2
 POWER_OF_POWER = 3
 POWER_OF_MODULU = 4
+POWER_OF_UNARY_MINUS = 3.5
 POWER_OF_AVERAGE = 5
 POWER_OF_MAXIMUM = 5
 POWER_OF_MINIMUM = 5
 POWER_OF_NEGATIVE = 6
 POWER_OF_FACTORIAL = 6
+POWER_OF_SUM = 6
 POWER_OF_PARENTHESIS = 7
 
 
 class EquationComponent(object):
-    def __init__(self, power_value: int) -> None:
+    def __init__(self, power_value: float) -> None:
         """
         The Function initialize an EquationComponent Class.
         :param power_value: The power of the equation component.
@@ -83,6 +85,7 @@ class Operand(EquationComponent):
             - '&'
             - '%'
             - '~'
+            - '-' (Unary)
             - '('
             - None (The component can be the first component in the expression)
         :param element_to_check: the element to check if appears in the valid place.
@@ -98,14 +101,15 @@ class Operand(EquationComponent):
                 and not isinstance(element_to_check, MinimumOperator) \
                 and not isinstance(element_to_check, ModuluOperator) \
                 and not isinstance(element_to_check, NegativeOperator) \
-                and not isinstance(element_to_check, LeftParenthesisOperator)\
+                and not isinstance(element_to_check, LeftParenthesisOperator) \
+                and not isinstance(element_to_check, UnaryMinusOperator) \
                 and element_to_check is not None:
             return False
         return True
 
 
 class Operator(EquationComponent):
-    def __init__(self, power_value: int) -> None:
+    def __init__(self, power_value: float) -> None:
         """
         The Function initialize an Operator Class.
         :param power_value: The power of the Operator.
@@ -147,12 +151,14 @@ class AdditionOperator(Operator):
         Before Addition Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
@@ -181,12 +187,14 @@ class SubtractionOperator(Operator):
         Before Subtraction Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
@@ -215,12 +223,14 @@ class MultiplicationOperator(Operator):
         Before Multiplication Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
@@ -252,12 +262,14 @@ class DivisionOperator(Operator):
         Before Division Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
@@ -290,12 +302,14 @@ class PowerOperator(Operator):
         Before Power Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
@@ -327,12 +341,14 @@ class ModuluOperator(Operator):
         Before Modulu Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
@@ -361,12 +377,14 @@ class AverageOperator(Operator):
         Before Average Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
@@ -397,12 +415,14 @@ class MaximumOperator(Operator):
         Before Maximum Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
@@ -433,12 +453,14 @@ class MinimumOperator(Operator):
         Before Minimum Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
             return False
         return True
@@ -508,7 +530,7 @@ class FactorialOperator(Operator):
         If not, the function will throw an Exception.
         :param operand1: the operand to calculate the factorial of.
         :param operand2: the second operand is useless. by default, it equals to 0.
-        :return: the negative of operand1.
+        :return: the factorial of operand1.
         """
         if operand1.get_value() < 0:
             raise MathematicsExceptions.FactorialOfNegativeException()
@@ -527,13 +549,63 @@ class FactorialOperator(Operator):
         Before Factorial Operator The Following Components can appear:
             - Operand
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
+                and not isinstance(element_to_check, RightParenthesisOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator):
+            return False
+        return True
+
+
+class SumDigitsOperator(Operator):
+    def __init__(self) -> None:
+        """
+        The Function initialize a sum digits of an operand class.
+        """
+        super().__init__(POWER_OF_SUM)
+
+    def operation(self, operand1: Operand, operand2: Operand = 0) -> Operand:
+        """
+        The Function returns the sum of digits of operand1.
+        The function will check if operand1 is positive (or zero).
+        If not, the function will throw an Exception.
+        :param operand1: the operand to sum the digits of.
+        :param operand2: the second operand is useless. by default, it equals to 0.
+        :return: the negative of operand1.
+        """
+        if operand1.get_value() < 0:
+            raise MathematicsExceptions.SumOfNegativeException()
+        str_of_operand1 = str(operand1).replace('.', '')
+        operand1 = int(str_of_operand1)
+
+        sum_of_digits = 0
+        while operand1 > 0:
+            sum_of_digits = operand1 % 10
+            operand1 //= 10
+
+        return Operand(sum_of_digits)
+
+    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Sum Operator.
+        if it does, return True. otherwise return False.
+        Before Sum Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - '#'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
+        if not isinstance(element_to_check, Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, RightParenthesisOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator):
             return False
         return True
 
@@ -560,6 +632,7 @@ class LeftParenthesisOperator(Operator):
             - '&'
             - '%'
             - '~'
+            - '-' (Unary)
             - '('
             - None (The component can be the first component in the expression)
         :param element_to_check: the element to check if appears in the valid place.
@@ -575,7 +648,8 @@ class LeftParenthesisOperator(Operator):
                 and not isinstance(element_to_check, MinimumOperator) \
                 and not isinstance(element_to_check, ModuluOperator) \
                 and not isinstance(element_to_check, NegativeOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator)\
+                and not isinstance(element_to_check, RightParenthesisOperator) \
+                and not isinstance(element_to_check, UnaryMinusOperator) \
                 and element_to_check is not None:
             return False
         return True
@@ -595,12 +669,66 @@ class RightParenthesisOperator(Operator):
         Before Right Parenthesis Operator The Following Components can appear:
             - 'Operand'
             - '!'
+            - '#'
             - ')'
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
         if not isinstance(element_to_check, Operand) \
                 and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
                 and not isinstance(element_to_check, RightParenthesisOperator):
+            return False
+        return True
+
+
+class UnaryMinusOperator(Operator):
+    def __init__(self) -> None:
+        """
+        The Function initialize a sum digits of an operand class.
+        """
+        super().__init__(POWER_OF_UNARY_MINUS)
+
+    def operation(self, operand1: Operand, operand2: Operand = 0) -> Operand:
+        """
+        The Function returns the negative of operand1.
+        :param operand1: the operand to multiply by -1 of.
+        :param operand2: the second operand is useless. by default, it equals to 0.
+        :return: the negative of operand1.
+        """
+
+        return Operand(operand1.get_value() * -1)
+
+    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Unary minus.
+        if it does, return True. otherwise return False.
+        Before Unary Minus Operator The Following Components can appear:
+            - '+'
+            - '-'
+            - '*'
+            - '/'
+            - '^'
+            - '@'
+            - '$'
+            - '&'
+            - '%'
+            - '~'
+            - '('
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
+        if not isinstance(element_to_check, AdditionOperator) \
+                and not isinstance(element_to_check, SubtractionOperator) \
+                and not isinstance(element_to_check, MultiplicationOperator) \
+                and not isinstance(element_to_check, DivisionOperator) \
+                and not isinstance(element_to_check, PowerOperator) \
+                and not isinstance(element_to_check, AverageOperator) \
+                and not isinstance(element_to_check, MaximumOperator) \
+                and not isinstance(element_to_check, MinimumOperator) \
+                and not isinstance(element_to_check, ModuluOperator) \
+                and not isinstance(element_to_check, NegativeOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator) \
+                and element_to_check is not None:
             return False
         return True
