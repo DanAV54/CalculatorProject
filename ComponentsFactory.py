@@ -3,17 +3,14 @@ import ExpressionComponentsClasses
 
 class ExpressionComponentFactory(object):
     @staticmethod
-    def create_component(value: object, is_unary: bool  = False) -> ExpressionComponentsClasses.EquationComponent:
+    def create_component(value: object) -> ExpressionComponentsClasses.EquationComponent:
         """
         The function creates the right Expression Component in accordance to the input.
         in case of a float/int value the function will return an Operand.
         otherwise, the function will create the appropriate Operator.
         :param value: The value to link to the right Component.
-        :param is_unary: if the value is unary minus.
         :return: The Expression Component
         """
-        if is_unary:
-            return ExpressionComponentsClasses.UnaryMinusOperator()
         if isinstance(value, float) or isinstance(value, int):
             return ExpressionComponentsClasses.Operand(value)
         elif value == "+":
@@ -44,3 +41,5 @@ class ExpressionComponentFactory(object):
             return ExpressionComponentsClasses.RightParenthesisOperator()
         elif value == "#":
             return ExpressionComponentsClasses.SumDigitsOperator()
+        elif value == "|":
+            return ExpressionComponentsClasses.UnaryMinusOperator()

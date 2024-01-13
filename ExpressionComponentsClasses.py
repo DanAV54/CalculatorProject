@@ -615,7 +615,18 @@ class LeftParenthesisOperator(Operator):
         """
         The Function initialize a Left Parenthesis operand class.
         """
+        self.is_negative = False
         super().__init__(POWER_OF_PARENTHESIS)
+
+    def set_is_negative(self, new_negativity: bool):
+        """
+        setter for is_negative property.
+        if the property is True so the whole expression inside the Parenthesis
+        is multiplied by -1
+        :param new_negativity:
+        :return:
+        """
+        self.is_negative = new_negativity
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
         """
@@ -732,3 +743,24 @@ class UnaryMinusOperator(Operator):
                 and element_to_check is not None:
             return False
         return True
+
+    def is_operator(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" is operator.
+        unary minus is operator only if operand is not coming before it.
+        otherwise, unary minus is the sign of the operand after it.
+        :param element_to_check: the element to check if it is an operator before the minus.
+        :return: The function will return True or False depending on the examination.
+        """
+        if not isinstance(element_to_check, AdditionOperator) \
+                and not isinstance(element_to_check, SubtractionOperator) \
+                and not isinstance(element_to_check, MultiplicationOperator) \
+                and not isinstance(element_to_check, DivisionOperator) \
+                and not isinstance(element_to_check, PowerOperator) \
+                and not isinstance(element_to_check, AverageOperator) \
+                and not isinstance(element_to_check, MaximumOperator) \
+                and not isinstance(element_to_check, MinimumOperator) \
+                and not isinstance(element_to_check, ModuluOperator) \
+                and not isinstance(element_to_check, NegativeOperator):
+            return True
+        return False
