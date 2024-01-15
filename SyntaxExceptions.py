@@ -57,4 +57,20 @@ class ExpressionComponentNotInRightPlaceException (SyntaxException):
         The function returns the string that describes the Exception.
         :return: The String Describing that there is an Expression Component Not In Right Place.
         """
-        return "There is a operator or operand that are not in a valid place.\n"
+        return "There is an operator or operand that are not in a valid place.\n"
+
+
+class UnmatchedParenthesisException(SyntaxException):
+    def __init__(self) -> None:
+        """
+        The function initialize Unmatched Parenthesis Exception.
+        """
+        pass
+
+    def __str__(self) -> str:
+        """
+        The function returns the string that describes the Exception.
+        :return: The String Describing that there is an Unmatched Parenthesis in the expression.
+        :return: The String Describing that there is an Unmatched Parenthesis in the expression.
+        """
+        return "The Parenthesis are not used correctly.\n"

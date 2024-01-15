@@ -1,4 +1,3 @@
-from typing import Union
 import MathematicsExceptions
 
 POWER_OF_OPERAND = 0
@@ -17,6 +16,10 @@ POWER_OF_FACTORIAL = 6
 POWER_OF_SUM = 6
 POWER_OF_PARENTHESIS = 7
 
+LEFT_UNARY = "left"
+RIGHT_UNARY = "right"
+BINARY = "binary"
+
 
 class EquationComponent(object):
     def __init__(self, power_value: float) -> None:
@@ -26,6 +29,13 @@ class EquationComponent(object):
         The power indicates the order pf precedence in the expression.
         """
         self.__power__ = power_value
+
+    def get_power(self) -> float:
+        """
+        getter for the power of the component
+        :return: the power of the component
+        """
+        return self.__power__
 
     def is_valid_before(self, element_to_check):
         """
@@ -38,7 +48,7 @@ class EquationComponent(object):
 
 
 class Operand(EquationComponent):
-    def __init__(self, new_value: Union[int, float]) -> None:
+    def __init__(self, new_value: float) -> None:
         """
         The Function initialize an Operand.
         The Function Sets The Operand Power to be Zero because it is not an operator.
@@ -47,14 +57,14 @@ class Operand(EquationComponent):
         super().__init__(POWER_OF_OPERAND)
         self.__value__ = new_value
 
-    def get_value(self) -> Union[int, float]:
+    def get_value(self) -> float:
         """
         The function is a getter for the value of the operand.
         :return: the value of the operand.
         """
         return self.__value__
 
-    def set_value(self, new_value: Union[int, float]) -> None:
+    def set_value(self, new_value: float) -> None:
         """
         The function is a setter for the operand's value.
         :param new_value: the parameter is the new value to set.
@@ -62,7 +72,7 @@ class Operand(EquationComponent):
         """
         self.__value__ = new_value
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         The function will return the operator's value.
         the function will be called every time the program will ask to print operand.
@@ -91,15 +101,7 @@ class Operand(EquationComponent):
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
-        if not isinstance(element_to_check, AdditionOperator) \
-                and not isinstance(element_to_check, SubtractionOperator) \
-                and not isinstance(element_to_check, MultiplicationOperator) \
-                and not isinstance(element_to_check, DivisionOperator) \
-                and not isinstance(element_to_check, PowerOperator) \
-                and not isinstance(element_to_check, AverageOperator) \
-                and not isinstance(element_to_check, MaximumOperator) \
-                and not isinstance(element_to_check, MinimumOperator) \
-                and not isinstance(element_to_check, ModuluOperator) \
+        if not isinstance(element_to_check, BinaryOperator) \
                 and not isinstance(element_to_check, NegativeOperator) \
                 and not isinstance(element_to_check, LeftParenthesisOperator) \
                 and not isinstance(element_to_check, UnaryMinusOperator) \
@@ -109,13 +111,21 @@ class Operand(EquationComponent):
 
 
 class Operator(EquationComponent):
-    def __init__(self, power_value: float) -> None:
+    def __init__(self, power_value: float, operator_type: str) -> None:
         """
         The Function initialize an Operator Class.
         :param power_value: The power of the Operator.
         The power indicates the order pf precedence in the expression.
         """
         super().__init__(power_value)
+        self.__type__ = operator_type
+
+    def get_type(self) -> str:
+        """
+        getter for the type of operator
+        :return: the type of the operator
+        """
+        return self.__type__
 
     def operation(self, operand1: Operand, operand2: Operand) -> Operand:
         """
@@ -128,7 +138,34 @@ class Operator(EquationComponent):
         return Operand(0)
 
 
-class AdditionOperator(Operator):
+class BinaryOperator(Operator):
+    def __init__(self, power_value: float) -> None:
+        """
+        The Function initialize an Addition Operator Class.
+        """
+        super().__init__(power_value, BINARY)
+
+    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
+        """
+        The function is checking if "element_to_check" can appear before Binary Operator.
+        if it does, return True. otherwise return False.
+        Before Binary Operator The Following Components can appear:
+            - Operand
+            - '!'
+            - '#'
+            - ')'
+        :param element_to_check: the element to check if appears in the valid place.
+        :return: The function will return True or False depending on the examination.
+        """
+        if not isinstance(element_to_check, Operand) \
+                and not isinstance(element_to_check, FactorialOperator) \
+                and not isinstance(element_to_check, SumDigitsOperator) \
+                and not isinstance(element_to_check, RightParenthesisOperator):
+            return False
+        return True
+
+
+class AdditionOperator(BinaryOperator):
     def __init__(self) -> None:
         """
         The Function initialize an Addition Operator Class.
@@ -144,27 +181,8 @@ class AdditionOperator(Operator):
         """
         return Operand(operand1.get_value() + operand2.get_value())
 
-    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
-        """
-        The function is checking if "element_to_check" can appear before Addition Operator.
-        if it does, return True. otherwise return False.
-        Before Addition Operator The Following Components can appear:
-            - Operand
-            - '!'
-            - '#'
-            - ')'
-        :param element_to_check: the element to check if appears in the valid place.
-        :return: The function will return True or False depending on the examination.
-        """
-        if not isinstance(element_to_check, Operand) \
-                and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, SumDigitsOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
-            return False
-        return True
 
-
-class SubtractionOperator(Operator):
+class SubtractionOperator(BinaryOperator):
     def __init__(self) -> None:
         """
         The Function initialize a Subtraction Operator Class.
@@ -180,27 +198,8 @@ class SubtractionOperator(Operator):
         """
         return Operand(operand1.get_value() - operand2.get_value())
 
-    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
-        """
-        The function is checking if "element_to_check" can appear before Subtraction Operator.
-        if it does, return True. otherwise return False.
-        Before Subtraction Operator The Following Components can appear:
-            - Operand
-            - '!'
-            - '#'
-            - ')'
-        :param element_to_check: the element to check if appears in the valid place.
-        :return: The function will return True or False depending on the examination.
-        """
-        if not isinstance(element_to_check, Operand) \
-                and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, SumDigitsOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
-            return False
-        return True
 
-
-class MultiplicationOperator(Operator):
+class MultiplicationOperator(BinaryOperator):
     def __init__(self) -> None:
         """
         The Function initialize a Multiplication Operator Class.
@@ -216,27 +215,8 @@ class MultiplicationOperator(Operator):
         """
         return Operand(operand1.get_value() * operand2.get_value())
 
-    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
-        """
-        The function is checking if "element_to_check" can appear before Multiplication Operator.
-        if it does, return True. otherwise return False.
-        Before Multiplication Operator The Following Components can appear:
-            - Operand
-            - '!'
-            - '#'
-            - ')'
-        :param element_to_check: the element to check if appears in the valid place.
-        :return: The function will return True or False depending on the examination.
-        """
-        if not isinstance(element_to_check, Operand) \
-                and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, SumDigitsOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
-            return False
-        return True
 
-
-class DivisionOperator(Operator):
+class DivisionOperator(BinaryOperator):
     def __init__(self) -> None:
         """
         The Function initialize a Division Operator Class.
@@ -255,27 +235,8 @@ class DivisionOperator(Operator):
             raise MathematicsExceptions.DivideByZeroException()
         return Operand(operand1.get_value() / operand2.get_value())
 
-    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
-        """
-        The function is checking if "element_to_check" can appear before Division Operator.
-        if it does, return True. otherwise return False.
-        Before Division Operator The Following Components can appear:
-            - Operand
-            - '!'
-            - '#'
-            - ')'
-        :param element_to_check: the element to check if appears in the valid place.
-        :return: The function will return True or False depending on the examination.
-        """
-        if not isinstance(element_to_check, Operand) \
-                and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, SumDigitsOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
-            return False
-        return True
 
-
-class PowerOperator(Operator):
+class PowerOperator(BinaryOperator):
     def __init__(self) -> None:
         """
         The Function initialize a Power Operator Class.
@@ -293,29 +254,15 @@ class PowerOperator(Operator):
         """
         if operand1.get_value() == 0 and operand2.get_value() == 0:
             raise MathematicsExceptions.PowerZeroByZeroException()
-        return Operand(operand1.get_value() ** operand2.get_value())
-
-    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
-        """
-        The function is checking if "element_to_check" can appear before Power Operator.
-        if it does, return True. otherwise return False.
-        Before Power Operator The Following Components can appear:
-            - Operand
-            - '!'
-            - '#'
-            - ')'
-        :param element_to_check: the element to check if appears in the valid place.
-        :return: The function will return True or False depending on the examination.
-        """
-        if not isinstance(element_to_check, Operand) \
-                and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, SumDigitsOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
-            return False
-        return True
+        elif operand1.get_value() == 0 and operand2.get_value() < 0:
+            raise MathematicsExceptions.DivideByZeroException()
+        try:
+            return Operand(operand1.get_value() ** operand2.get_value())
+        except OverflowError as ovr_exc:
+            return Operand(float('inf'))
 
 
-class ModuluOperator(Operator):
+class ModuluOperator(BinaryOperator):
     def __init__(self) -> None:
         """
         The Function initialize a Modulu Operator Class.
@@ -334,27 +281,8 @@ class ModuluOperator(Operator):
             raise MathematicsExceptions.DivideByZeroException()
         return Operand(operand1.get_value() % operand2.get_value())
 
-    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
-        """
-        The function is checking if "element_to_check" can appear before Modulu Operator.
-        if it does, return True. otherwise return False.
-        Before Modulu Operator The Following Components can appear:
-            - Operand
-            - '!'
-            - '#'
-            - ')'
-        :param element_to_check: the element to check if appears in the valid place.
-        :return: The function will return True or False depending on the examination.
-        """
-        if not isinstance(element_to_check, Operand) \
-                and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, SumDigitsOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
-            return False
-        return True
 
-
-class AverageOperator(Operator):
+class AverageOperator(BinaryOperator):
     def __init__(self) -> None:
         """
         The Function initialize an Average between two operands Operator Class.
@@ -370,27 +298,8 @@ class AverageOperator(Operator):
         """
         return Operand((operand1.get_value() + operand2.get_value()) / 2)
 
-    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
-        """
-        The function is checking if "element_to_check" can appear before Average Operator.
-        if it does, return True. otherwise return False.
-        Before Average Operator The Following Components can appear:
-            - Operand
-            - '!'
-            - '#'
-            - ')'
-        :param element_to_check: the element to check if appears in the valid place.
-        :return: The function will return True or False depending on the examination.
-        """
-        if not isinstance(element_to_check, Operand) \
-                and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, SumDigitsOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
-            return False
-        return True
 
-
-class MaximumOperator(Operator):
+class MaximumOperator(BinaryOperator):
     def __init__(self) -> None:
         """
         The Function initialize a Maximum between two operands Operator Class.
@@ -408,27 +317,8 @@ class MaximumOperator(Operator):
             return operand1
         return operand2
 
-    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
-        """
-        The function is checking if "element_to_check" can appear before Maximum Operator.
-        if it does, return True. otherwise return False.
-        Before Maximum Operator The Following Components can appear:
-            - Operand
-            - '!'
-            - '#'
-            - ')'
-        :param element_to_check: the element to check if appears in the valid place.
-        :return: The function will return True or False depending on the examination.
-        """
-        if not isinstance(element_to_check, Operand) \
-                and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, SumDigitsOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
-            return False
-        return True
 
-
-class MinimumOperator(Operator):
+class MinimumOperator(BinaryOperator):
     def __init__(self) -> None:
         """
         The Function initialize a Minimum between two operands Operator Class.
@@ -446,32 +336,13 @@ class MinimumOperator(Operator):
             return operand1
         return operand2
 
-    def is_valid_before(self, element_to_check: EquationComponent) -> bool:
-        """
-        The function is checking if "element_to_check" can appear before Minimum Operator.
-        if it does, return True. otherwise return False.
-        Before Minimum Operator The Following Components can appear:
-            - Operand
-            - '!'
-            - '#'
-            - ')'
-        :param element_to_check: the element to check if appears in the valid place.
-        :return: The function will return True or False depending on the examination.
-        """
-        if not isinstance(element_to_check, Operand) \
-                and not isinstance(element_to_check, FactorialOperator) \
-                and not isinstance(element_to_check, SumDigitsOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator):
-            return False
-        return True
-
 
 class NegativeOperator(Operator):
     def __init__(self) -> None:
         """
         The Function initialize a Negative of an operand class.
         """
-        super().__init__(POWER_OF_NEGATIVE)
+        super().__init__(POWER_OF_NEGATIVE, LEFT_UNARY)
 
     def operation(self, operand1: Operand, operand2: Operand = 0) -> Operand:
         """
@@ -501,15 +372,7 @@ class NegativeOperator(Operator):
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
-        if not isinstance(element_to_check, AdditionOperator) \
-                and not isinstance(element_to_check, SubtractionOperator) \
-                and not isinstance(element_to_check, MultiplicationOperator) \
-                and not isinstance(element_to_check, DivisionOperator) \
-                and not isinstance(element_to_check, PowerOperator) \
-                and not isinstance(element_to_check, AverageOperator) \
-                and not isinstance(element_to_check, MaximumOperator) \
-                and not isinstance(element_to_check, MinimumOperator) \
-                and not isinstance(element_to_check, ModuluOperator) \
+        if not isinstance(element_to_check, BinaryOperator) \
                 and not isinstance(element_to_check, LeftParenthesisOperator) \
                 and element_to_check is not None:
             return False
@@ -521,7 +384,7 @@ class FactorialOperator(Operator):
         """
         The Function initialize a factorial of an operand class.
         """
-        super().__init__(POWER_OF_FACTORIAL)
+        super().__init__(POWER_OF_FACTORIAL, RIGHT_UNARY)
 
     def operation(self, operand1: Operand, operand2: Operand = 0) -> Operand:
         """
@@ -532,14 +395,18 @@ class FactorialOperator(Operator):
         :param operand2: the second operand is useless. by default, it equals to 0.
         :return: the factorial of operand1.
         """
+        if operand1.get_value() == float('inf'):
+            return operand1
         if operand1.get_value() < 0:
             raise MathematicsExceptions.FactorialOfNegativeException()
         if isinstance(operand1.get_value(), float):
             if not operand1.get_value().is_integer():
                 raise MathematicsExceptions.FactorialOfRationalException()
-        factorial = 1
+        factorial = 1.0
         for index in range(1, int(operand1.get_value()) + 1):
             factorial = factorial * index
+            if factorial == float('inf'):
+                break
         return Operand(factorial)
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
@@ -567,7 +434,7 @@ class SumDigitsOperator(Operator):
         """
         The Function initialize a sum digits of an operand class.
         """
-        super().__init__(POWER_OF_SUM)
+        super().__init__(POWER_OF_SUM, RIGHT_UNARY)
 
     def operation(self, operand1: Operand, operand2: Operand = 0) -> Operand:
         """
@@ -585,7 +452,7 @@ class SumDigitsOperator(Operator):
 
         sum_of_digits = 0
         while operand1 > 0:
-            sum_of_digits = operand1 % 10
+            sum_of_digits += operand1 % 10
             operand1 //= 10
 
         return Operand(sum_of_digits)
@@ -615,8 +482,8 @@ class LeftParenthesisOperator(Operator):
         """
         The Function initialize a Left Parenthesis operand class.
         """
-        self.is_negative = False
-        super().__init__(POWER_OF_PARENTHESIS)
+        self.__is_negative__ = False
+        super().__init__(POWER_OF_PARENTHESIS, "")
 
     def set_is_negative(self, new_negativity: bool):
         """
@@ -626,7 +493,14 @@ class LeftParenthesisOperator(Operator):
         :param new_negativity:
         :return:
         """
-        self.is_negative = new_negativity
+        self.__is_negative__ = new_negativity
+
+    def get_is_negative(self) -> bool:
+        """
+        getter for the "is_negative" field.
+        :return: the "is_negative" field
+        """
+        return self.__is_negative__
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
         """
@@ -659,7 +533,7 @@ class LeftParenthesisOperator(Operator):
                 and not isinstance(element_to_check, MinimumOperator) \
                 and not isinstance(element_to_check, ModuluOperator) \
                 and not isinstance(element_to_check, NegativeOperator) \
-                and not isinstance(element_to_check, RightParenthesisOperator) \
+                and not isinstance(element_to_check, LeftParenthesisOperator) \
                 and not isinstance(element_to_check, UnaryMinusOperator) \
                 and element_to_check is not None:
             return False
@@ -671,7 +545,7 @@ class RightParenthesisOperator(Operator):
         """
         The Function initialize a Right Parenthesis operand class.
         """
-        super().__init__(POWER_OF_PARENTHESIS)
+        super().__init__(POWER_OF_PARENTHESIS, "")
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
         """
@@ -694,11 +568,20 @@ class RightParenthesisOperator(Operator):
 
 
 class UnaryMinusOperator(Operator):
-    def __init__(self) -> None:
+    def __init__(self, is_real: bool) -> None:
         """
         The Function initialize a sum digits of an operand class.
+        :param is_real: the function returns if the minus is a minus that should be calculated.
         """
-        super().__init__(POWER_OF_UNARY_MINUS)
+        super().__init__(POWER_OF_UNARY_MINUS, LEFT_UNARY)
+        self.__is_real__ = is_real
+
+    def get_is_real(self) -> bool:
+        """
+        getter for the "is_real" property.
+        :return: returns the "is_real" property
+        """
+        return self.__is_real__
 
     def operation(self, operand1: Operand, operand2: Operand = 0) -> Operand:
         """
@@ -726,18 +609,11 @@ class UnaryMinusOperator(Operator):
             - '%'
             - '~'
             - '('
+            - None (The component can be the first component in the expression)
         :param element_to_check: the element to check if appears in the valid place.
         :return: The function will return True or False depending on the examination.
         """
-        if not isinstance(element_to_check, AdditionOperator) \
-                and not isinstance(element_to_check, SubtractionOperator) \
-                and not isinstance(element_to_check, MultiplicationOperator) \
-                and not isinstance(element_to_check, DivisionOperator) \
-                and not isinstance(element_to_check, PowerOperator) \
-                and not isinstance(element_to_check, AverageOperator) \
-                and not isinstance(element_to_check, MaximumOperator) \
-                and not isinstance(element_to_check, MinimumOperator) \
-                and not isinstance(element_to_check, ModuluOperator) \
+        if not isinstance(element_to_check, BinaryOperator) \
                 and not isinstance(element_to_check, NegativeOperator) \
                 and not isinstance(element_to_check, LeftParenthesisOperator) \
                 and element_to_check is not None:
@@ -752,15 +628,16 @@ class UnaryMinusOperator(Operator):
         :param element_to_check: the element to check if it is an operator before the minus.
         :return: The function will return True or False depending on the examination.
         """
-        if not isinstance(element_to_check, AdditionOperator) \
-                and not isinstance(element_to_check, SubtractionOperator) \
-                and not isinstance(element_to_check, MultiplicationOperator) \
-                and not isinstance(element_to_check, DivisionOperator) \
-                and not isinstance(element_to_check, PowerOperator) \
-                and not isinstance(element_to_check, AverageOperator) \
-                and not isinstance(element_to_check, MaximumOperator) \
-                and not isinstance(element_to_check, MinimumOperator) \
-                and not isinstance(element_to_check, ModuluOperator) \
+        if not isinstance(element_to_check, BinaryOperator) \
                 and not isinstance(element_to_check, NegativeOperator):
             return True
         return False
+
+
+def is_valid_at_the_end(element_to_check: EquationComponent) -> bool:
+    if not isinstance(element_to_check, BinaryOperator) \
+            and not isinstance(element_to_check, UnaryMinusOperator) \
+            and not isinstance(element_to_check, LeftParenthesisOperator) \
+            and not isinstance(element_to_check, NegativeOperator):
+        return True
+    return False

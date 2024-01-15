@@ -1,17 +1,33 @@
+import MathematicsExceptions
+import SyntaxExceptions
 import UserInterfaceAndInput
 import ExpressionSolver
 
 
-def main():
+def main() -> None:
     flag = True
 
     while flag:
         UserInterfaceAndInput.print_menu()
-        option = UserInterfaceAndInput.input_option()
+        try:
+            option = UserInterfaceAndInput.input_option()
+        except (KeyboardInterrupt, EOFError) as kb_exc:
+            print("The user decided to end the program. Goodbye!")
+            option = "q"
 
         if option == "c":
-            solver = ExpressionSolver.ExpressionSolver(UserInterfaceAndInput.input_expression())
-            solver.solve_expression()
+            try:
+                solver = ExpressionSolver.ExpressionSolver(UserInterfaceAndInput.input_expression())
+                solver.solve_expression()
+            except SyntaxExceptions.SyntaxException as syn_exc:
+                print("Syntax Exception")
+                print(syn_exc)
+            except MathematicsExceptions.MathematicsException as math_exc:
+                print("Math Exception")
+                print(math_exc)
+            except (KeyboardInterrupt, EOFError) as kb_exc:
+                print("The user decided to end the program. Goodbye!")
+                option = "q"
         elif option == "h":
             UserInterfaceAndInput.print_help()
         elif option == "q":

@@ -18,7 +18,7 @@ class ExpressionSolver(object):
         TODO
         """
         self.__character_check__()
-        self.__create_list_of_components__(self.__expressionSimplifier__())
+        print(self.__calculate__(self.__create_list_of_components__(self.__expressionSimplifier__())))
 
     def __character_check__(self) -> None:
         """
@@ -44,7 +44,8 @@ class ExpressionSolver(object):
 
         self.__remove_minuses__()
 
-        print(self.expression)
+        if self.expression.count("(") != self.expression.count(")"):
+            raise SyntaxExceptions.UnmatchedParenthesisException()
 
         temporary_number_holder = ""
         if_number_flag = False
@@ -97,15 +98,12 @@ class ExpressionSolver(object):
         (if necessary) with |.
         :return: None
         """
-        while self.__find_minuses__() is not None:
+        while self.__find_minuses__()[0] != -1:
             start_index, end_index = self.__find_minuses__()
-            print(self.expression[start_index + 1:end_index])
-            if len(self.expression[start_index + 1:end_index]) % 2 == 0:
-                substring_to_replace = self.expression[:start_index + 1:end_index]
-                self.expression = self.expression[:start_index + 1] + "" + self.expression[end_index:]
+            if len(self.expression[start_index:end_index]) % 2 == 0:
+                self.expression = self.expression[:start_index] + "?" + self.expression[end_index:]
             else:
-                substring_to_replace = self.expression[:start_index + 1:end_index]
-                self.expression = self.expression[:start_index + 1] + "|" + self.expression[end_index:]
+                self.expression = self.expression[:start_index] + "|" + self.expression[end_index:]
 
     def __find_minuses__(self):
         """
@@ -113,22 +111,27 @@ class ExpressionSolver(object):
         :return: The start index of the minus sequence
         :return: The end index of the minus sequence
         """
-        start_index = self.expression.find("-")
-        end_index = start_index
-        if start_index == -1:
-            return None
+        temp_list = self.expression
+        start_index = -1
+        index = 0
+        while index != -1:
+            index = temp_list.find("-")
+            if index == -1:
+                break
+            if not (index - 1 < 0 or (temp_list[index - 1] != "!" and
+                                      temp_list[index - 1] != "#" and
+                                      temp_list[index - 1] != ")" and
+                                      temp_list[index - 1] != "." and not
+                                      temp_list[index - 1].isdigit())):
+                temp_list = temp_list[:index] + " " + temp_list[index + 1:]
+            else:
+                start_index = index
+                while index < len(temp_list) and \
+                        temp_list[index] == "-":
+                    index += 1
+                break
 
-        if not (start_index - 1 < 0 or (self.expression[start_index - 1] != "!" and
-                                        self.expression[start_index - 1] != "#" and
-                                        self.expression[start_index - 1] != ")" and
-                                        self.expression[start_index - 1] != "." and not
-                                        self.expression[start_index - 1].isdigit())):
-            return None
-
-        while self.expression[end_index] == "-":
-            end_index += 1
-
-        return start_index + 1, end_index
+        return start_index, index
 
     def __create_list_of_components__(self, component_list: list) -> list:
         """
@@ -153,20 +156,102 @@ class ExpressionSolver(object):
                 raise SyntaxExceptions.ExpressionComponentNotInRightPlaceException()
             else:
                 if is_negative:
-                    temp_component = equation_component_list.pop()
-                    if isinstance(temp_component, ExpressionComponentsClasses.Operand):
-                        temp_component.set_value(temp_component.get_value() * -1)
-                        equation_component_list.append(temp_component)
-                    elif isinstance(temp_component, ExpressionComponentsClasses.LeftParenthesisOperator):
-                        temp_component.set_is_negative(is_negative)
-                        equation_component_list.append(temp_component)
+                    if isinstance(new_component_object, ExpressionComponentsClasses.Operand):
+                        new_component_object.set_value(new_component_object.get_value() * -1)
+                        equation_component_list.append(new_component_object)
+                    elif isinstance(new_component_object, ExpressionComponentsClasses.LeftParenthesisOperator):
+                        new_component_object.set_is_negative(is_negative)
+                        equation_component_list.append(new_component_object)
                     is_negative = False
+                    previous_component = new_component_object
+                    continue
 
                 if isinstance(new_component_object, ExpressionComponentsClasses.UnaryMinusOperator):
+                    if not new_component_object.get_is_real():
+                        previous_component = new_component_object
+                        continue
                     if not new_component_object.is_operator(previous_component):
                         is_negative = True
+                        previous_component = new_component_object
+                        continue
 
                 equation_component_list.append(new_component_object)
                 previous_component = new_component_object
 
+        if not ExpressionComponentsClasses.is_valid_at_the_end(previous_component):
+            raise SyntaxExceptions.ExpressionComponentNotInRightPlaceException()
         return equation_component_list
+
+    def __calculate__(self, equation_component_list: list):
+        start_index, end_index = self.__find_parenthesis__(equation_component_list)
+        while start_index != -1:
+            result_operand = self.__calculate__(equation_component_list[start_index + 1: end_index])
+            if equation_component_list[start_index].get_is_negative():
+                result_operand.set_value(result_operand.get_value() * -1)
+            equation_component_list = equation_component_list[:start_index] + [
+                result_operand] + equation_component_list[
+                                  end_index + 1:]
+            start_index, end_index = self.__find_parenthesis__(equation_component_list)
+
+        while len(equation_component_list) > 1:
+            max_operator_index, type_of_operator = self.__find_strongest_operator__(equation_component_list)
+            if type_of_operator == ExpressionComponentsClasses.LEFT_UNARY:
+                equation_component_list[max_operator_index] = equation_component_list[max_operator_index].operation(
+                    equation_component_list[max_operator_index + 1])
+                equation_component_list.pop(max_operator_index + 1)
+            elif type_of_operator == ExpressionComponentsClasses.RIGHT_UNARY:
+                equation_component_list[max_operator_index] = equation_component_list[max_operator_index].operation(
+                    equation_component_list[max_operator_index - 1])
+                equation_component_list.pop(max_operator_index - 1)
+            elif type_of_operator == ExpressionComponentsClasses.BINARY:
+                equation_component_list[max_operator_index] = equation_component_list[max_operator_index].operation(
+                    equation_component_list[max_operator_index - 1], equation_component_list[max_operator_index + 1])
+                equation_component_list.pop(max_operator_index + 1)
+                equation_component_list.pop(max_operator_index - 1)
+
+        if len(equation_component_list) < 1:
+            return None
+        return equation_component_list[0]
+
+    def __find_parenthesis__(self, equation_component_list: list) -> tuple:
+        start_index = -1
+        end_index = -1
+
+        for index in range(len(equation_component_list)):
+            if isinstance(equation_component_list[index], ExpressionComponentsClasses.LeftParenthesisOperator):
+                start_index = index
+                break
+            elif isinstance(equation_component_list[index], ExpressionComponentsClasses.RightParenthesisOperator):
+                raise SyntaxExceptions.UnmatchedParenthesisException()
+
+        if start_index != -1:
+            open_counter = 0
+            for index in range(start_index, len(equation_component_list)):
+                if isinstance(equation_component_list[index], ExpressionComponentsClasses.LeftParenthesisOperator):
+                    open_counter += 1
+                elif isinstance(equation_component_list[index],
+                                ExpressionComponentsClasses.RightParenthesisOperator):
+                    open_counter -= 1
+                if open_counter == 0:
+                    end_index = index
+                    break
+
+        if (start_index == -1 or end_index == -1) and start_index != end_index:
+            raise SyntaxExceptions.UnmatchedParenthesisException()
+        if end_index < start_index:
+            raise SyntaxExceptions.UnmatchedParenthesisException()
+        return start_index, end_index
+
+    def __find_strongest_operator__(self, equation_component_list: list) -> tuple:
+        max_operator_index = -1
+        type_of_operator = ""
+        max_operator_power = -1
+
+        for i in range(len(equation_component_list)):
+            if max_operator_power < equation_component_list[i].get_power():
+                max_operator_power = equation_component_list[i].get_power()
+                max_operator_index = i
+                if isinstance(equation_component_list[i], ExpressionComponentsClasses.Operator):
+                    type_of_operator = equation_component_list[i].get_type()
+
+        return max_operator_index, type_of_operator

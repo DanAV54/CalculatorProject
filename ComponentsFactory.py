@@ -42,4 +42,6 @@ class ExpressionComponentFactory(object):
         elif value == "#":
             return ExpressionComponentsClasses.SumDigitsOperator()
         elif value == "|":
-            return ExpressionComponentsClasses.UnaryMinusOperator()
+            return ExpressionComponentsClasses.UnaryMinusOperator(True)
+        elif value == "?":
+            return ExpressionComponentsClasses.UnaryMinusOperator(False)
