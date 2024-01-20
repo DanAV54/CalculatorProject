@@ -1,4 +1,5 @@
 import MathematicsExceptions
+from math import pow
 
 POWER_OF_OPERAND = 0
 POWER_OF_ADDITION = 1
@@ -233,7 +234,7 @@ class DivisionOperator(BinaryOperator):
         """
         if operand2.get_value() == 0:
             raise MathematicsExceptions.DivideByZeroException()
-        return Operand(operand1.get_value() / operand2.get_value())
+        return Operand(round(operand1.get_value() / operand2.get_value(), 10))
 
 
 class PowerOperator(BinaryOperator):
@@ -257,8 +258,10 @@ class PowerOperator(BinaryOperator):
         elif operand1.get_value() == 0 and operand2.get_value() < 0:
             raise MathematicsExceptions.DivideByZeroException()
         try:
-            return Operand(operand1.get_value() ** operand2.get_value())
-        except OverflowError as ovr_exc:
+            if type(operand1.get_value() ** operand2.get_value()) == complex:
+                raise MathematicsExceptions.ComplexNumbersNotSupportedException()
+            return Operand(round(operand1.get_value() ** operand2.get_value(), 10))
+        except OverflowError:
             return Operand(float('inf'))
 
 
@@ -279,7 +282,7 @@ class ModuluOperator(BinaryOperator):
         """
         if operand2.get_value() == 0:
             raise MathematicsExceptions.DivideByZeroException()
-        return Operand(operand1.get_value() % operand2.get_value())
+        return Operand(round(operand1.get_value() % operand2.get_value(), 10))
 
 
 class AverageOperator(BinaryOperator):
@@ -406,7 +409,7 @@ class FactorialOperator(Operator):
         for index in range(1, int(operand1.get_value()) + 1):
             factorial = factorial * index
             if factorial == float('inf'):
-                break
+                return Operand(factorial)
         return Operand(factorial)
 
     def is_valid_before(self, element_to_check: EquationComponent) -> bool:
@@ -447,6 +450,8 @@ class SumDigitsOperator(Operator):
         """
         if operand1.get_value() < 0:
             raise MathematicsExceptions.SumOfNegativeException()
+        if operand1.get_value() == float('inf'):
+            return Operand(float('inf'))
         str_of_operand1 = str(operand1).replace('.', '')
         operand1 = int(str_of_operand1)
 
@@ -620,7 +625,8 @@ class UnaryMinusOperator(Operator):
             return False
         return True
 
-    def is_operator(self, element_to_check: EquationComponent) -> bool:
+    @staticmethod
+    def is_operator(element_to_check: EquationComponent) -> bool:
         """
         The function is checking if "element_to_check" is operator.
         unary minus is operator only if operand is not coming before it.

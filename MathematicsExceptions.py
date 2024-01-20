@@ -86,3 +86,18 @@ class SumOfNegativeException (MathematicsException):
         :return: The String Describing that summing negative number occurred.
         """
         return "Summing Negative Number Occurred\n"
+
+
+class ComplexNumbersNotSupportedException (MathematicsException):
+    def __init__(self) -> None:
+        """
+        The function initialize Complex Numbers Not Supported Exception
+        """
+        pass
+
+    def __str__(self) -> str:
+        """
+        The function returns the string that describes the Exception.
+        :return: The String Describing that there is a root of a negative number.
+        """
+        return "Root of Negative Number Occurred\n"

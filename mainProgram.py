@@ -28,6 +28,7 @@ def main() -> None:
             except (KeyboardInterrupt, EOFError) as kb_exc:
                 print("The user decided to end the program. Goodbye!")
                 option = "q"
+                flag = False
         elif option == "h":
             UserInterfaceAndInput.print_help()
         elif option == "q":
