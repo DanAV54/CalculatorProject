@@ -18,7 +18,7 @@ def main() -> None:
         if option == "c":
             try:
                 solver = ExpressionSolver.ExpressionSolver(UserInterfaceAndInput.input_expression())
-                solver.solve_expression()
+                print(solver.solve_expression())
             except SyntaxExceptions.SyntaxException as syn_exc:
                 print("Syntax Exception")
                 print(syn_exc)

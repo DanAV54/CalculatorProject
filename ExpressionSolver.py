@@ -13,13 +13,13 @@ class ExpressionSolver(object):
         """
         self.expression = expression
 
-    def solve_expression(self) -> None:
+    def solve_expression(self):
         """
-        The function activate all the Solving Function and prints the result
-        :return: None
+        The function activate all the Solving Function and returns the result
+        :return: the remaining operand
         """
         self.__character_check__()
-        print(self.__calculate__(self.__create_list_of_components__(self.__expressionSimplifier__())))
+        return self.__calculate__(self.__create_list_of_components__(self.__expressionSimplifier__()))
 
     def __character_check__(self) -> None:
         """
@@ -175,6 +175,7 @@ class ExpressionSolver(object):
                         equation_component_list.append(new_component_object)
                     is_negative = False
                     previous_component = new_component_object
+                    flag = False
 
                 # the function checks unary minus and differentiates between unary with 3.5 power and immediate minus
                 elif isinstance(new_component_object, ExpressionComponentsClasses.UnaryMinusOperator):
