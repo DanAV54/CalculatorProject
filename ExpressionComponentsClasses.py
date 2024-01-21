@@ -1,5 +1,4 @@
 import MathematicsExceptions
-from math import pow
 
 POWER_OF_OPERAND = 0
 POWER_OF_ADDITION = 1

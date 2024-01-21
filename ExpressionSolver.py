@@ -19,7 +19,11 @@ class ExpressionSolver(object):
         :return: the remaining operand
         """
         self.__character_check__()
-        return self.__calculate__(self.__create_list_of_components__(self.__expressionSimplifier__()))
+        result = self.__calculate__(self.__create_list_of_components__(self.__expressionSimplifier__()))
+        if result is None:
+            return None
+        else:
+            return result.get_value()
 
     def __character_check__(self) -> None:
         """
