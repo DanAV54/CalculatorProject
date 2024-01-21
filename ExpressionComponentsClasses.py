@@ -452,7 +452,7 @@ class SumDigitsOperator(Operator):
         if operand1.get_value() == float('inf'):
             return Operand(float('inf'))
         str_of_operand1 = str(operand1).replace('.', '')
-        operand1 = int(str_of_operand1)
+        operand1 = float(str_of_operand1)
 
         sum_of_digits = 0
         while operand1 > 0:
