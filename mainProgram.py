@@ -11,7 +11,7 @@ def main() -> None:
         UserInterfaceAndInput.print_menu()
         try:
             option = UserInterfaceAndInput.input_option()
-        except (KeyboardInterrupt, EOFError) as kb_exc:
+        except EOFError as kb_exc:
             print("The user decided to end the program. Goodbye!")
             option = "q"
 
@@ -25,7 +25,7 @@ def main() -> None:
             except MathematicsExceptions.MathematicsException as math_exc:
                 print("Math Exception")
                 print(math_exc)
-            except (KeyboardInterrupt, EOFError) as kb_exc:
+            except EOFError as kb_exc:
                 print("The user decided to end the program. Goodbye!")
                 option = "q"
                 flag = False
